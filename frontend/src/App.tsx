@@ -216,6 +216,8 @@ type AppStatus = {
   llm: string;
   llm_model: string;
   budget_usd: number;
+  browser_headed: boolean;
+  browser_mode: string;
 };
 
 type LiveStep = {
@@ -783,7 +785,9 @@ function App() {
         </nav>
         <div className="sidebar-footer">
           <span className={`connection-dot ${appStatus ? 'online' : ''}`} />
-          <span>{appStatus ? 'API connected' : 'Waiting for API'}</span>
+          <span>
+            {appStatus ? `${appStatus.browser_mode === 'headed' ? 'Visible' : 'Headless'} browser mode` : 'Waiting for API'}
+          </span>
         </div>
       </aside>
 

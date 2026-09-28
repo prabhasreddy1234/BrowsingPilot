@@ -55,7 +55,7 @@ async def health() -> dict[str, str]:
 @app.get("/api/status")
 async def status() -> dict[str, Any]:
     """Reference-style status: is Jev live or simulated, its price, LLM keys, budget."""
-    from app.config import DEMO_BUDGET_USD, JEV_IN_PER_M, OPENAI_API_KEY, has_jev_key
+    from app.config import BROWSER_HEADED, DEMO_BUDGET_USD, JEV_IN_PER_M, OPENAI_API_KEY, has_jev_key
 
     return {
         "jev": "live" if has_jev_key() else "simulated",
@@ -64,6 +64,8 @@ async def status() -> dict[str, Any]:
         "llm": "live" if OPENAI_API_KEY else "simulated",
         "llm_model": OPENAI_MODEL,
         "budget_usd": DEMO_BUDGET_USD,
+        "browser_headed": BROWSER_HEADED,
+        "browser_mode": "headed" if BROWSER_HEADED else "headless",
     }
 
 
