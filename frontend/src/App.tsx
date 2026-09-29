@@ -332,6 +332,7 @@ function App() {
   const [comparison, setComparison] = useState<Comparison | null>(null);
 
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [lastUpdated, setLastUpdated] = useState('Waiting for first sync');
   const [activityStats, setActivityStats] = useState<Record<string, ActivityStats>>({
     'LLM only': EMPTY_ACTIVITY, 'Jev + LLM': EMPTY_ACTIVITY,
   });
@@ -451,6 +452,9 @@ function App() {
     await fetchQueries();
     await fetchActivityStats();
     await fetchAgentHistory();
+    setLastUpdated(
+      new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    );
   };
 
   useEffect(() => {
@@ -803,7 +807,15 @@ function App() {
             </h2>
           </div>
           <div className="topbar-meta">
-            <span className="data-freshness">Live workspace</span>
+            <button
+              type="button"
+              className="refresh-button"
+              onClick={() => void refreshData()}
+              disabled={loading}
+            >
+              Refresh
+            </button>
+            <span className="data-freshness">Updated {lastUpdated}</span>
             <div className={`status ${statusClass}`}><span className="status-dot" />{status}</div>
           </div>
         </header>
