@@ -1,69 +1,69 @@
 # Jev Decision Benchmark
 
-A local benchmark and browser automation app that compares a TypeSafe Jev decision layer against a traditional LLM for tool selection and web-grounded task execution.
+A local benchmark and browser automation platform for comparing TypeSafe Jev decision-making against a standard LLM for tool selection and web-grounded task execution.
 
-The project is designed around a simple principle:
+The core idea is straightforward:
 
 > Jev makes the decision. The LLM writes the answer. Your code owns the control flow.
 
-This allows the app to evaluate whether a typed, probabilistic decision model improves tool choice quality, latency, and cost while still using an LLM for natural-language reasoning and summarization.
+This architecture makes it easier to evaluate whether a typed, probabilistic decision layer improves tool selection quality, latency, and operating cost while preserving the flexibility of an LLM for reasoning and synthesis.
 
 ## Overview
 
-This repository contains:
+This repository includes:
 
-- a Python FastAPI backend that runs decision benchmarks, stores results in SQLite, and streams agent activity over Server-Sent Events
-- a React + TypeScript frontend that visualizes benchmark outcomes and exposes live agent workflows
-- browser automation powered by Playwright Chromium
-- a comparison layer that runs Jev + LLM and LLM-only pipelines side by side
+- a Python FastAPI backend for benchmark execution, SQLite persistence, and event-driven agent workflows
+- a React + TypeScript frontend for live monitoring and dashboard analysis
+- Playwright-based browser automation for grounded search and browsing tasks
+- side-by-side comparison flows for Jev + LLM versus LLM-only execution paths
 
-The application is intended for local experimentation and demos rather than production deployment.
+The project is intended for local experimentation, demos, and model benchmarking rather than production deployment.
 
 ## What Jev is
 
-Jev is TypeSafe's System One decision model. It returns a typed, probabilistic decision rather than a free-form text completion. In practice, that means:
+Jev is TypeSafe's System One decision model. Instead of producing a free-form text completion, it returns a structured, probabilistic decision with:
 
 - a selected tool
-- a confidence score
+- confidence scores
 - per-option probabilities
-- low latency, typically in the ~70–200 ms range
-- pricing based on input tokens only, with output free
+- low-latency execution
+- input-token pricing with output cost excluded
 
-By default, the project is configured for a Jev price of $0.042 per 1M input tokens and allows the app to run in simulation mode when no TypeSafe API key is available.
+By default, the project assumes a Jev rate of $0.042 per 1M input tokens and can run in simulation mode when no TypeSafe API key is configured.
 
-## Key features
+## Key capabilities
 
-- Benchmark dashboard comparing Jev vs LLM on labeled tool-selection queries
-- Live cost, latency, and accuracy reporting
-- SQLite-backed historical results and summary endpoints
-- Browser-driven task execution for site navigation and search tasks
-- Visible browser mode for interactive demos and headless comparison mode
-- Streaming workflow events with cumulative timing, token usage, and spend
-- Graceful browser fallback when a real browser cannot be launched
-- Common typo correction for domains such as Wikipedia and Bing
+- benchmark dashboard comparing Jev and LLM performance on labeled tool-selection tasks
+- live reporting for latency, cost, and accuracy
+- historical run tracking in SQLite
+- browser-driven task execution for search and page retrieval workflows
+- visible browser mode for demos and headless mode for comparison runs
+- streaming execution events with cumulative timing, token usage, and spend
+- graceful fallbacks when browser automation is unavailable
+- typo-tolerant domain handling for common cases such as Wikipedia and Bing
 
-## Architecture
+## System architecture
 
-The system separates decision-making from answer generation:
+The application separates decision-making from answer generation:
 
-1. A user prompt is evaluated by Jev or an LLM to select a tool
-2. The app decides the execution path based on the selected tool
-3. A browser opens to fetch or search a page
-4. A language model summarizes the page or answers the user query
-5. Timing, tokens, and spend are logged and compared in the dashboard
+1. A prompt is evaluated by Jev or an LLM to select the appropriate tool.
+2. The application chooses the execution path based on that decision.
+3. A browser session opens to search, navigate, or retrieve content.
+4. A language model summarizes the retrieved page or answers the original question.
+5. Timing, token usage, and spend are logged and compared in the dashboard.
 
-This arrangement makes the decision layer easy to benchmark without conflating it with text generation.
+This separation keeps the decision layer measurable without conflating it with generative content creation.
 
-## Repository layout
+## Repository structure
 
-- [backend/](backend/) — FastAPI API, SQLite persistence, benchmark logic, browser agent, decision providers
-- [backend/app/](backend/app/) — application code and service modules
+- [backend/](backend/) — FastAPI backend, benchmark logic, browser agent, and service modules
+- [backend/app/](backend/app/) — application implementation and supporting services
 - [frontend/](frontend/) — React + TypeScript dashboard and UI
-- [data/](data/) — project data and benchmark database storage
-- [.env.example](.env.example) — template for required environment variables
-- [README.md](README.md) — project documentation
+- [data/](data/) — benchmark data and SQLite-backed results
+- [.env.example](.env.example) — environment variable template
+- [README.md](README.md) — project overview and setup instructions
 
-## Tech stack
+## Technology stack
 
 ### Backend
 
@@ -85,7 +85,7 @@ This arrangement makes the decision layer easy to benchmark without conflating i
 
 ### 1. Configure environment
 
-Copy the example environment file and set your real keys in a local .env file:
+Create a local environment file and add your keys:
 
 ```bash
 cp .env.example .env
@@ -104,9 +104,9 @@ BROWSER_HEADED=1
 
 Notes:
 
-- Keep keys in the local .env file only
-- If no keys are present, the app falls back to clearly labeled simulation mode
-- BROWSER_HEADED=1 opens a visible browser for the live browser tabs; set it to 0 for headless execution
+- keep secrets in the local .env file only
+- if keys are absent, the app clearly falls back to simulation mode
+- setting BROWSER_HEADED=1 opens a visible browser; set it to 0 for headless execution
 
 ### 2. Install backend dependencies
 
@@ -122,16 +122,16 @@ cd frontend
 npm install
 ```
 
-### 4. Install Chromium for Playwright
+### 4. Install Playwright Chromium
 
 ```bash
 cd backend
 playwright install chromium
 ```
 
-If this step is skipped, the browser workflow falls back to HTTP fetching instead of a real browser session.
+If this step is skipped, the browser workflow falls back to HTTP-based fetching instead of a real browser session.
 
-## Run the app locally
+## Run locally
 
 Start the backend:
 
@@ -147,28 +147,28 @@ cd frontend
 npm run dev
 ```
 
-The frontend expects the backend at http://localhost:8000.
+The frontend connects to the backend at http://localhost:8000.
 
-## Browser workflows
+## Live workflow modes
 
-The app exposes multiple live agent modes:
+The application exposes several live agent modes:
 
-- LLM Only: the model chooses the tool and the app opens a browser to perform the action
-- Jev + LLM: Jev selects the tool, then the browser runs and the LLM answers from the page
-- Compare: Jev + LLM and LLM-only execute concurrently and stream their results side by side
+- LLM Only: the model chooses the tool and the app executes the task
+- Jev + LLM: Jev selects the tool, then the browser agent performs the action and the LLM answers from the page
+- Compare: Jev + LLM and LLM-only workflows run side by side and stream results for immediate comparison
 
-Supported prompt patterns include:
+Example prompts include:
 
 - open www.wikipedia.org and search for NBA
 - search for quantum computing in wikipedia.org
 - Retrieve the page https://example.com/docs
 - What is the latest news about Android 16?
 
-The agent also auto-corrects common domain typos such as wikipidea.org -> wikipedia.org.
+The system also auto-corrects common typos such as wikipidea.org -> wikipedia.org.
 
 ## Benchmarking
 
-The benchmark is built around a fixed labeled dataset of tool-selection prompts. Each result records:
+The benchmark uses a fixed set of labeled tool-selection prompts. Each result captures:
 
 - selected tool
 - expected tool
@@ -178,7 +178,7 @@ The benchmark is built around a fixed labeled dataset of tool-selection prompts.
 - correctness
 - model metadata
 
-The dashboard can aggregate results across runs and report:
+The dashboard aggregates this information to report:
 
 - accuracy by model
 - average latency by model
@@ -187,15 +187,15 @@ The dashboard can aggregate results across runs and report:
 
 ## Cost and pricing model
 
-The pricing layer is configurable and is intended to be easy to adjust without changing the frontend.
+The pricing layer is configurable and designed to be easy to adjust without modifying the frontend.
 
-Jev is billed differently from a standard LLM:
+Jev pricing differs from a standard LLM:
 
 - input tokens are billed
 - output tokens are free
 - the configured Jev rate is applied to the input-token count only
 
-This is implemented in the backend pricing and config modules and reflects the product model of a typed decision system rather than a generative model.
+This reflects the product model of a typed decision system rather than a generative model.
 
 ## API overview
 
@@ -230,20 +230,20 @@ This is implemented in the backend pricing and config modules and reflects the p
 
 ## Important notes and limitations
 
-- This project is designed for local development and demos, not cloud deployment
-- The benchmark focuses on tool selection, not full end-to-end automation across arbitrary enterprise workflows
-- Cost estimates are approximate, especially when providers do not return full pricing metadata
-- API outputs can vary over time, so a single benchmark run is best interpreted as directional rather than definitive
-- Google search is intentionally not a reliable target for automation because it frequently triggers anti-bot protections
+- the project is designed for local development and demos rather than cloud deployment
+- the benchmark focuses on tool selection rather than arbitrary enterprise automation workflows
+- cost estimates are approximate, particularly when providers do not return full pricing metadata
+- a single benchmark run should be treated as directional, not definitive
+- Google search is intentionally not a stable target for automation because it frequently triggers anti-bot protections
 
 ## Suggested workflow
 
-1. Start the backend and frontend
-2. Enter a prompt in one of the live agent tabs
-3. Compare Jev + LLM vs LLM-only behavior
-4. Run the benchmark dashboard to evaluate model quality over labeled examples
-5. Review latency and cost trends before deciding how the decision layer should be used in a broader system
+1. Start the backend and frontend.
+2. Enter a prompt in one of the live agent tabs.
+3. Compare Jev + LLM and LLM-only behavior side by side.
+4. Run the benchmark dashboard to evaluate quality across labeled examples.
+5. Review latency and cost trends before deciding how the decision layer should be used in a broader system.
 
 ## License
 
-This project is for research, benchmarking, and local experimentation. Use it in line with the relevant repository and dependency licenses.
+This project is intended for research, benchmarking, and local experimentation. Use it in accordance with the relevant repository and dependency licenses.
