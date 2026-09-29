@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -302,6 +302,8 @@ function WorkflowSteps({ steps, nowTick }: { steps: LiveStep[]; nowTick: number 
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
+  const [tabLoading, setTabLoading] = useState(false);
+  const tabTimerRef = useRef<number | null>(null);
   const [appStatus, setAppStatus] = useState<AppStatus | null>(null);
   const [pricing, setPricing] = useState<any>(null);
   const [sim, setSim] = useState({ requestsPerMonth: 3000000, avgInput: 1200, avgOutput: 220, pctLlm: 30 });
@@ -457,8 +459,24 @@ function App() {
     );
   };
 
+  const handleTabChange = (nextTab: TabKey) => {
+    if (nextTab === activeTab) return;
+    if (tabTimerRef.current) {
+      window.clearTimeout(tabTimerRef.current);
+    }
+    setTabLoading(true);
+    setActiveTab(nextTab);
+    tabTimerRef.current = window.setTimeout(() => setTabLoading(false), 260);
+  };
+
   useEffect(() => {
     refreshData();
+  }, []);
+
+  useEffect(() => () => {
+    if (tabTimerRef.current) {
+      window.clearTimeout(tabTimerRef.current);
+    }
   }, []);
 
   // Ticks while an agent runs, so the active step shows a live elapsed timer.
@@ -756,7 +774,7 @@ function App() {
         <nav>
           <button
             className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => handleTabChange('dashboard')}
             aria-current={activeTab === 'dashboard' ? 'page' : undefined}
           >
             <span className="nav-icon">01</span>
@@ -764,7 +782,7 @@ function App() {
           </button>
           <button
             className={`nav-link ${activeTab === 'llm' ? 'active' : ''}`}
-            onClick={() => setActiveTab('llm')}
+            onClick={() => handleTabChange('llm')}
             aria-current={activeTab === 'llm' ? 'page' : undefined}
           >
             <span className="nav-icon">02</span>
@@ -772,7 +790,7 @@ function App() {
           </button>
           <button
             className={`nav-link ${activeTab === 'browser' ? 'active' : ''}`}
-            onClick={() => setActiveTab('browser')}
+            onClick={() => handleTabChange('browser')}
             aria-current={activeTab === 'browser' ? 'page' : undefined}
           >
             <span className="nav-icon">03</span>
@@ -780,7 +798,7 @@ function App() {
           </button>
           <button
             className={`nav-link ${activeTab === 'compare' ? 'active' : ''}`}
-            onClick={() => setActiveTab('compare')}
+            onClick={() => handleTabChange('compare')}
             aria-current={activeTab === 'compare' ? 'page' : undefined}
           >
             <span className="nav-icon">04</span>
@@ -796,6 +814,12 @@ function App() {
       </aside>
 
       <main className="content">
+        {tabLoading && (
+          <div className="tab-loader" aria-live="polite" aria-busy="true">
+            <div className="tab-loader-spinner" aria-hidden="true" />
+            <div className="tab-loader-copy">Loading {activeTab}</div>
+          </div>
+        )}
         <header className="topbar">
           <div>
             <p className="eyebrow">Observability / {activeTab}</p>
