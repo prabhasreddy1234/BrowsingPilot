@@ -816,8 +816,10 @@ function App() {
       <main className="content">
         {tabLoading && (
           <div className="tab-loader" aria-live="polite" aria-busy="true">
-            <div className="tab-loader-spinner" aria-hidden="true" />
-            <div className="tab-loader-copy">Loading {activeTab}</div>
+            <div className="tab-loader-inner">
+              <div className="tab-loader-spinner" aria-hidden="true" />
+              <div className="tab-loader-copy">Loading {activeTab}</div>
+            </div>
           </div>
         )}
         <header className="topbar">
